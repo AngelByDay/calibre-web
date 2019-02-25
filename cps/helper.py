@@ -19,13 +19,12 @@
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from cps import config, global_WorkerThread, get_locale
+from cps import config, global_WorkerThread, get_locale, db
 from flask import current_app as app
 from tempfile import gettempdir
 import sys
 import os
 import re
-import db
 import unicodedata
 import worker
 import time
@@ -225,7 +224,10 @@ def get_valid_filename(value, replace_whitespace=True):
     value = value[:128]
     if not value:
         raise ValueError("Filename cannot be empty")
-    return value
+    if sys.version_info.major == 3:
+        return value
+    else:
+        return value.decode('utf-8')
 
 
 def get_sorted_author(value):
